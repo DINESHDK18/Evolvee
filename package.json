@@ -1,0 +1,14 @@
+{
+  "name": "evolveguru",
+  "version": "1.0.0",
+  "description": "Student Teacher Community App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dinesh Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
