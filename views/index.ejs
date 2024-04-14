@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+<header>
+    <div class="container">
+        <h1>Welcome to Our Tutoring Service</h1>
+        <p>Providing personalized tutoring for all subjects</p>
+        <a href="{{ url_for('register') }}" class="btn">Register</a>
+        <a href="{{ url_for('login') }}" class="btn">Login</a>
+    </div>
+</header>
+
+<section id="about">
+    <div class="about-wrapper shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+        <div class="abt"> <h2>About Us</h2></div>  
+        <div class="container">     
+            <div class="box">
+                <h3>Our Mission</h3>
+                <p>Empowering students to reach their educational potential through personalized support.</p>
+            </div>
+            <div class="box">
+                <h3>Expert Educators</h3>
+                <p>Qualified instructors dedicated to making learning engaging and effective.</p>
+            </div>
+            <div class="box">
+                <h3>Individualized Approach</h3>
+                <p>Customized learning plans tailored to each student’s unique needs and goals.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="services">
+    <div class="srvc"><h2>Our Services</h2></div>
+    <div class="container">
+        <div class="service">
+            <h3>Math Tutoring</h3>
+            <p>Get help with algebra, calculus, geometry, and more.</p>
+        </div>
+        <div class="service">
+            <h3>Science Tutoring</h3>
+            <p>Expert assistance with biology, chemistry, physics, and more.</p>
+        </div>
+        <div class="service">
+            <h3>Language Tutoring</h3>
+            <p>Improve your language skills with our language experts.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2024 Tutoring Website</p>
+    </div>
+</footer>
+{% endblock %}
