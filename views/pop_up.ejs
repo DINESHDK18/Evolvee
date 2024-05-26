@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Successful</title>
+  <style>
+
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ddd;
+      text-align: center;
+      z-index: 10; 
+      display: none;
+    }
+
+    #close-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="popup">
+    <p>You have been successfully registered!</p>
+    <p>Our team will contact you within 24 hours.</p>
+    <button id="close-button">Close</button>
+  </div>
+
+  <script>
+    const popup = document.getElementById('popup');
+    const closeButton = document.getElementById('close-button');
+
+    popup.style.display = 'block';
+
+    closeButton.addEventListener('click', function(event) {
+      popup.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

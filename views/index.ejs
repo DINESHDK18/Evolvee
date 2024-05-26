@@ -1,16 +1,16 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 
 {% block title %}
 Home Page
 {% endblock %}
 
-{% block content %}
+{% block content %} -->
 <header>
     <div class="container">
         <h1>Welcome to Our Tutoring Service</h1>
         <p>Providing personalized tutoring for all subjects</p>
-        <a href="{{ url_for('register') }}" class="btn">Register</a>
-        <a href="{{ url_for('login') }}" class="btn">Login</a>
+        <a href="/register" class="btn">Register</a>
+        <a href="/login" class="btn">Login</a>
     </div>
 </header>
 
@@ -57,4 +57,3 @@ Home Page
         <p>&copy; 2024 Tutoring Website</p>
     </div>
 </footer>
-{% endblock %}

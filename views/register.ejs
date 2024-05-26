@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
-  <link rel="stylesheet" href="{{ url_for("static", filename = "register_style.css")}}">
+  <link rel="stylesheet" href="register_style.css">
   <script src="https://kit.fontawesome.com/1edbf99196.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
         <div class="form-box">
-            <h1 id="title">Sign Up</h1>
-            <form action="register.php" method="POST"></form> 
+            <h1 id="title">Sign Up</h1> 
+            <form action="/register/new" method="POST">
                 <div class="input-group" id="inputGroup">
                     <div class="input-field" id="nameField">
                         <i class="fa-solid fa-user"></i>
@@ -27,27 +27,25 @@
                     </div>
                     <div class="input-field" id="mobileField">
                         <i class="fa-solid fa-mobile"></i>
-                        <input type="text" name="mob_no" placeholder="Mobile Number">
+                        <input type="text" name="mobileNumber" placeholder="Mobile Number">
                     </div>
                     <div class="input-field" id="profileField">
                         <i class="fa-solid fa-user-group"></i>
-                        <input type="text" name="profession" placeholder="Teacher/Student">
+                        <select class="inputt" name="options">
+                            <option value="">-- Select --</option>  
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                          </select>
                     </div>                       
                 </div>
                 
                 <div class="reset-password">
                     <a href="#"> Forgot Password? </a>
                 </div>
+                <div class="btn-field">
+                    <button type="submit" id="SignUpBtn" class="active">Sign Up</button>
+                </div>            
             </form>
-            <div class="btn-field">
-                <button type="submit" id="SignUpBtn" class="active"> 
-                   <a href="/login" id="SignInBtn" style="text-decoration: none; color: inherit;">Sign Up</a>
-                </button>
-                <!-- <button type="button" id="SignInBtn" class="active">
-                    <a href="#" id="SignInBtn" style="text-decoration: none; color: inherit;">Sign Up</a>
-                </button> -->
-                
-            </div>            
         </div>
     </div>
 

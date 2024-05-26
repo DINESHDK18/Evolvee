@@ -4,26 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <link rel="stylesheet" href="{{ url_for("static", filename = "register_style.css")}}">
+  <link rel="stylesheet" href="register_style.css">
   <script src="https://kit.fontawesome.com/1edbf99196.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
         <div class="form-box">
             <h1 id="title">Sign In</h1>
-            <form action="/login" method="POST"> 
+            <form action="/popup" method="POST"> 
                 <div class="input-group" id="inputGroup">
                     <div class="input-field">
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" name="email" placeholder="Email">
+                        <input type="email" name="email" placeholder="Email" required>
                     </div>                  
                 </div>
                 <div class="input-field">
                     <i class="fa-solid fa-key"></i>
-                    <input type="password" name="password" placeholder="Password">
+                    <input type="password" name="password" placeholder="Password" required> 
                 </div>
                 <div class="reset-password">
-                    <a href="#"> Forgot Password? </a>
+                    <a href="/forgot"> Forgot Password? </a>
                 </div>
                 <div class="btn-field">
                     <button type="submit" id="SignInBtn" class="active">Sign In</button>
@@ -32,29 +32,5 @@
               
         </div>
     </div>
-
-<!-- <script>
-    let SignUpBtn = document.getElementById("SignUpBtn");
-    let SignInBtn = document.getElementById("SignInBtn");
-    let inputGroup = document.getElementById("inputGroup");
-
-    // Disable Sign Up button and enable Sign In button
-    SignUpBtn.onclick = function() {
-        inputGroup.style.display = "none";  // Hide input fields
-        SignInBtn.classList.add("active");
-        SignUpBtn.classList.remove("active");
-        SignUpBtn.classList.add("disable");
-        SignInBtn.classList.remove("disable");
-    }
-
-    // Enable Sign Up button and disable Sign In button
-    SignInBtn.onclick = function() {
-        inputGroup.style.display = "block";  // Show input fields
-        SignUpBtn.classList.add("active");
-        SignInBtn.classList.remove("active");
-        SignInBtn.classList.add("disable");
-        SignUpBtn.classList.remove("disable");
-    }
-</script> -->
 </body>
 </html>

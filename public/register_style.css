@@ -80,3 +80,11 @@
     color: #fafafa;
     background-color: #ccc;
 }
+
+.inputt {
+    width: 85%;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+}
