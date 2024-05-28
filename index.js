@@ -15,9 +15,21 @@ const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const User = require("./models/userModel.js");
+const passwordReset = require("./models/passwordReset.js");
 const { saveRedirectUrl, isLoggedIn } = require("./middleware.js");
+require("dotenv").config();
+const Cookies = require('cookies');
 
+const nodemailer = require('nodemailer');
 
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS
+      }
+  });
+  
 
 const jwt = require("jsonwebtoken");
 const port = 8008;
@@ -49,9 +61,6 @@ main().then(() => {
 async function main() {
     await mongoose.connect(MONGO_URL);
 }
-
-
-
 
 
 const sessionOptions = {
@@ -88,9 +97,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.all("*", (req,res,next) => {
-    next(new ExpressError(404,"page not found"));
-});
+// app.all("*", (req,res,next) => {
+//     next(new ExpressError(404,"page not found"));
+// });
 
 app.use((err, req, res, next) => {
     let { statusCode=500, message="Something went wrong" } = err;
@@ -155,19 +164,19 @@ app.post("/register", wrapAsync(async (req, res) => {
 }));
 
 
-// app.post("/register/new", async (req, res) => {
-//     const {name,password,email,mobileNumber,options}=req.body;
+app.post("/register/new", async (req, res) => {
+    const {name,password,email,mobileNumber,options}=req.body;
    
-//     try {
-//             console.log("Hello");
-//             const newRegister = new Register({name,password,email,mobileNumber,options});
-//             await newRegister.save();
-//             res.redirect("/login");
-//         } catch (err) {
-//             console.error(err); 
-//             res.status(500).send("Error during registration. Please try again."); 
-//         }
-// });
+    try {
+            console.log("Hello");
+            const newRegister = new Register({name,password,email,mobileNumber,options});
+            await newRegister.save();
+            res.redirect("/login");
+        } catch (err) {
+            console.error(err); 
+            res.status(500).send("Error during registration. Please try again."); 
+        }
+});
 
 
 
@@ -185,31 +194,108 @@ app.get("/about", (req, res) => {
 
 
 
-app.post("/forgot", async(req, res) => {
-    const {email} = req.body;
+app.post("/forgot", async (req, res) => {
+    const { email } = req.body;
+    const cookies = new Cookies(req, res);
+    cookies.set("email", email);
+    const otp = Math.floor(1000 + Math.random() * 9000);
     try {
-        const oldUser = await Register.findOne({ email });
-        if(!oldUser){
-            return res.send("User Not Exists!!");
+      const UserExist = await Register.findOne({ email });
+  
+      if (!UserExist) {
+        return res.status(404).send("User Not Exists!!");
+      }
+  
+      const previousOTP = await passwordReset.findOne({ email: UserExist.email });
+  
+      if (previousOTP) {
+        await passwordReset.findOneAndUpdate({ email: UserExist.email }, { otp: otp });
+      } else {
+        const passwordResetData = new passwordReset({ email: UserExist.email, otp: otp });
+        await passwordResetData.save();
+      }
+  
+      const mailOptions = {
+        from: process.env.GMAIL_USER,
+        to: UserExist.email,
+        subject: 'Password Reset OTP',
+        text: `Your OTP for password reset is: ${otp}`
+      };
+  
+      transporter.sendMail(mailOptions, async (error, info) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ message: 'Failed to send OTP' });
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.render("verifyOtp.ejs")
+          setTimeout(async () => {
+            await passwordReset.deleteOne({ email: UserExist.email, otp: otp });
+            console.log('OTP record deleted after 1 minute');
+          }, 60000);
         }
-        const secret = JWT_SECRET + oldUser.password;
-        const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
-            expiresIn: "5m",
-        });
-        const link = `http://localhost:8008/reset-password/${oldUser._id}/${token}`;
-        console.log(link);
+      });
+  
     } catch (error) {
+      console.error(error);
+      res.status(500).send("An error occurred while processing your request.");
+    }
+  });
+  
+// app.get("/reset-password/:id/:token", async (req,res) => {
+//     const {id, token} = req.params;
+    
+// });
+app.post("/verifyOTP", async (req, res) => {
+    const otp = req.body.OTP;
+    const cookies = new Cookies(req, res);
+    const email = cookies.get('email'); 
+    if (!email) {
+        return res.status(400).json({ message: 'Email not found in cookies' });
+    }
+    try {
+        const otpDoc = await passwordReset.findOne({ email: email, otp: otp });
         
+        if (!otpDoc) {
+            return res.status(400).json({ message: 'Invalid OTP' });
+        }
+
+        await passwordReset.deleteOne({ _id: otpDoc._id });
+        res.render("changePassword.ejs");
+    } catch (error) {
+        console.error("Error verifying OTP:", error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
-app.get("/reset-password/:id/:token", async (req,res) => {
-    const {id, token} = req.params;
-    console.log(req.params);
+app.post("/resetPassword", async (req, res) => {
+    const newPassword = req.body.password;
+    const cookies = new Cookies(req, res);
+    const email = cookies.get('email'); // Assuming 'email' is the key used to store the email in cookies
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email not found in cookies' });
+    }
+
+    console.log(req.body,newPassword);
+
+    try {
+        const exist = await Register.findOne({ email: email });
+
+        if (exist) {
+            await Register.updateOne(
+                { email: email },
+                { $set: { password: newPassword } }
+            );
+        }  
+        // res.status(200).json({ status: "success", message: "Password reset successfully" });
+        cookies.set("email", "");
+        res.redirect("/login");
+    } catch (error) {
+        console.error("Failed to reset password:", error);
+        res.status(500).json({ message: "Failed to reset password" });
+    }
 });
-
-
-
 
 app.listen(port, () => {
     console.log(`listening to thee port ${port}`);
